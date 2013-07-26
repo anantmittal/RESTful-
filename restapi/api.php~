@@ -53,7 +53,7 @@ class API extends REST
 			{
 				$result[] = $rlt;
 			}
-			// If success everythig is good send header as "OK" and return list of users in JSON format
+			// If success everythig is good send header as "OK" and return list of products in JSON format
 			$this->response($this->json($result), 200);
 		}
 		$this->response('',204); // If no records "No Content" status
@@ -123,7 +123,7 @@ class API extends REST
 		}
 		else
 		{
-			$this->response('',400); // If no records "No Content" status
+			$this->response('',400); // Bad request status
 		}
 	}
 	
@@ -144,7 +144,7 @@ class API extends REST
 		}
 		else
 		{
-			$this->response('',400); // If no records "No Content" status
+			$this->response('',400); //  Bad request status
 		}
 	}
 	
