@@ -1,7 +1,7 @@
 RESTful-
 ========
 
-RESTful API to view, edit, delete, sadd and search products.
+RESTful API to view, edit, delete, add and search products.
 
 Database has a table of name products.
 CREATE TABLE `products` 
