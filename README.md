@@ -19,7 +19,7 @@ PRIMARY KEY (`id`)
 For testing the API, download Advanced REST client Application for Google Chrome
 https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo
 
-and for Mozilla Firefox
+or for Mozilla Firefox
 https://addons.mozilla.org/en-us/firefox/addon/restclient/
 
 // 1.) Retrieve the list of products
