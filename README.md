@@ -2,6 +2,8 @@ RESTful-
 ========
 
 RESTful API to view, edit, delete, add and search products.
+Install memcache from 
+https://www.digitalocean.com/community/articles/how-to-install-and-use-memcache-on-ubuntu-12-04
 
 Database has a table of name products.
 CREATE TABLE `products` 
