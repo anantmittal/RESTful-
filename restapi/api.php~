@@ -5,13 +5,12 @@ class API extends REST
 {
 	public $data = "";
 	private $db = NULL;
-	//public $meminstance = NULL;
+	
 	public function __construct()
 	{
 		parent::__construct();// Init parent contructor
-		//$this->meminstance = new Memcache();
-		//$this->meminstance->pconnect('localhost', 11211);
 		$this->dbConnect();// Initiate Database connection
+		
 	}
 
 	//Database connection
