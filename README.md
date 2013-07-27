@@ -6,16 +6,15 @@ Install memcache from
 https://www.digitalocean.com/community/articles/how-to-install-and-use-memcache-on-ubuntu-12-04
 
 Database has a table of name products.
-CREATE TABLE `products` 
-(
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`name` varchar(50) NOT NULL,
-`category` varchar(50) NOT NULL,
-`description` varchar(100) NOT NULL,
-`brand` varchar(50) NOT NULL,
-`price` int(11) NOT NULL,
-PRIMARY KEY (`id`)
-) AUTO_INCREMENT=1 ;
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(25) NOT NULL,
+  `category` varchar(50) NOT NULL,
+  `description` varchar(100) NOT NULL,
+  `brand` varchar(50) NOT NULL,
+  `price` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 
 For testing the API, download Advanced REST client Application for Google Chrome
