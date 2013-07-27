@@ -55,6 +55,8 @@ class REST
 				$this->_request = $this->cleanInputs($_GET);
 				break;
 			case "GET":
+				$this->_request = $this->cleanInputs($_GET);
+				break;
 			case "DELETE":
 				$this->_request = $this->cleanInputs($_GET);
 				break;

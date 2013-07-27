@@ -4,25 +4,22 @@ require_once("Rest.inc.php");
 class API extends REST 
 {
 	public $data = "";
-	const DB_SERVER = "localhost";
-	const DB_USER = "root";
-	const DB_PASSWORD = "shekhar!";
-	const DB = "products";
-
 	private $db = NULL;
-
+	//public $meminstance = NULL;
 	public function __construct()
 	{
 		parent::__construct();// Init parent contructor
+		//$this->meminstance = new Memcache();
+		//$this->meminstance->pconnect('localhost', 11211);
 		$this->dbConnect();// Initiate Database connection
 	}
 
 	//Database connection
 	private function dbConnect()
 	{
-		$this->db = mysql_connect(self::DB_SERVER,self::DB_USER,self::DB_PASSWORD);
+		$this->db = mysql_connect("localhost", "root", "shekhar!");
 		if($this->db)
-			mysql_select_db(self::DB,$this->db);
+			mysql_select_db("products",$this->db);
 	}
 
 	//Public method for access api.
@@ -45,18 +42,36 @@ class API extends REST
 		{
 			$this->response('',406);
 		}
-		$sql = mysql_query("SELECT * FROM products", $this->db);
-		if(mysql_num_rows($sql) > 0)
+		$meminstance = new Memcache();
+		$meminstance->pconnect('localhost', 11211);
+		$query = "SELECT * FROM products";
+		$querykey = "LISTPRODUCTS".md5($query);
+		$result_c = $meminstance->get($querykey);
+		if(!$result_c)
 		{
-			$result = array();
-			while($rlt = mysql_fetch_array($sql,MYSQL_ASSOC))
+			$sql = mysql_query("SELECT * FROM products", $this->db);
+			if(mysql_num_rows($sql) > 0)
 			{
-				$result[] = $rlt;
+				$result = array();
+				while($rlt = mysql_fetch_array($sql,MYSQL_ASSOC))
+				{
+					
+					$result[] = $rlt;
+				}
+				$meminstance->set($querykey, serialize($result), 0, 600);
+				// If success everythig is good send header as "OK" and return list of products in JSON format
+				echo "FROM the mysql table";
+				$this->response($this->json($result), 200);
 			}
-			// If success everythig is good send header as "OK" and return list of products in JSON format
-			$this->response($this->json($result), 200);
 		}
-		$this->response('',204); // If no records "No Content" status
+		else
+		if($result_c)
+		{
+			echo "From cache";
+			$this->response($this->json(unserialize($result_c)), 200);		
+		}
+		else
+			$this->response('',204); // If no records "No Content" status
 	}
 	
 	//2.) View Product
@@ -67,16 +82,31 @@ class API extends REST
 		{
 			$this->response('',406);
 		}
+		$meminstance = new Memcache();
+		$meminstance->pconnect('localhost', 11211);
 		$id = (int)$this->_request['id'];
 		if($id > 0)
 		{    
-			$sql = mysql_query("SELECT * FROM products WHERE id = $id");
-			if(mysql_num_rows($sql) > 0)
+			$query = "SELECT * FROM products WHERE id = $id";
+			$querykey = "VIEWPRODUCT".md5($query);
+			$result_c = $meminstance->get($querykey);
+			if(!$result_c)
 			{
-				$result = mysql_fetch_array($sql,MYSQL_ASSOC);
+				$sql = mysql_query("SELECT * FROM products WHERE id = $id");
+				if(mysql_num_rows($sql) > 0)
+				{
+					$result = mysql_fetch_array($sql,MYSQL_ASSOC);
+				}
+				$meminstance->set($querykey, serialize($result), 0, 600);
+				echo "FROM the mysql table";
+				$this->response($this->json($result),200);
 			}
-			
-			$this->response($this->json($result),200);
+			else
+			if($result_c)
+			{
+				echo "From cache";
+				$this->response($this->json(unserialize($result_c)), 200);		
+			}
 		}
 		else
 		{
@@ -92,13 +122,34 @@ class API extends REST
 		{
 			$this->response('',406);
 		}
+		$meminstance = new Memcache();
+		$meminstance->pconnect('localhost', 11211);
 		$name = $this->_request['name'];
-		  
-		$sql = mysql_query("SELECT * FROM products WHERE name like '%$name%'");
-		if(mysql_num_rows($sql) > 0)
+		$query = "SELECT * FROM products WHERE name like '%$name%'";
+		$querykey = "SEARCHPRODUCT".md5($query);
+		$result_c = $meminstance->get($querykey); 
+		if(!$result_c)
 		{
-			$result = mysql_fetch_array($sql,MYSQL_ASSOC);
-			$this->response($this->json($result),200);
+			$sql = mysql_query("SELECT * FROM products WHERE name like '%$name%'");
+			if(mysql_num_rows($sql) > 0)
+			{
+				$result = array();
+				while($rlt = mysql_fetch_array($sql,MYSQL_ASSOC))
+				{
+					
+					$result[] = $rlt;
+				}
+				$meminstance->set($querykey, serialize($result), 0, 600);
+				// If success everythig is good send header as "OK" and return list of products in JSON format
+				echo "FROM the mysql table";
+				$this->response($this->json($result), 200);
+			}
+		}
+		else
+		if($result_c)
+		{
+			echo "From cache";
+			$this->response($this->json(unserialize($result_c)), 200);
 		}
 		else
 		{
