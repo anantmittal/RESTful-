@@ -18,19 +18,26 @@ class API extends REST
 	{
 		$this->db = mysql_connect("localhost", "root", "shekhar!");
 		if($this->db)
+		{
 			mysql_select_db("products",$this->db);
+		}
 	}
-
+	
 	//Public method for access api.
 	//This method dynmically call the method based on the query string
 	public function processApi()
 	{
 		$func = strtolower(trim(str_replace("/","",$_REQUEST['rquest'])));
 		if((int)method_exists($this,$func) > 0)
+		{
 			$this->$func();
+		}
 		else
-			$this->response('',404);				
+		{
 			// If the method not exist with in this class, response would be "Page not found".
+			$this->response('',404);
+		}				
+			
 	}
 	
 	// 1.) Retrieve the list of products
@@ -58,8 +65,8 @@ class API extends REST
 					$result[] = $rlt;
 				}
 				$meminstance->set($querykey, serialize($result), 0, 600);
-				// If success everythig is good send header as "OK" and return list of products in JSON format
 				echo "FROM the mysql table";
+				// If success everythig is good send header as "OK" and return list of products from the mysql table
 				$this->response($this->json($result), 200);
 			}
 		}
@@ -67,6 +74,7 @@ class API extends REST
 		if($result_c)
 		{
 			echo "From cache";
+			// If success everythig is good send header as "OK" and return list of products from the cache
 			$this->response($this->json(unserialize($result_c)), 200);		
 		}
 		else
@@ -98,12 +106,14 @@ class API extends REST
 				}
 				$meminstance->set($querykey, serialize($result), 0, 600);
 				echo "FROM the mysql table";
+				// If success everythig is good send header as "OK" and return the product from the mysql table
 				$this->response($this->json($result),200);
 			}
 			else
 			if($result_c)
 			{
 				echo "From cache";
+				// If success everythig is good send header as "OK" and return the product from the cache
 				$this->response($this->json(unserialize($result_c)), 200);		
 			}
 		}
@@ -139,7 +149,7 @@ class API extends REST
 					$result[] = $rlt;
 				}
 				$meminstance->set($querykey, serialize($result), 0, 600);
-				// If success everythig is good send header as "OK" and return list of products in JSON format
+				// If success everythig is good send header as "OK" and return list of products from the mysql table
 				echo "FROM the mysql table";
 				$this->response($this->json($result), 200);
 			}
@@ -148,6 +158,7 @@ class API extends REST
 		if($result_c)
 		{
 			echo "From cache";
+			// If success everythig is good send header as "OK" and return list of products from the cache
 			$this->response($this->json(unserialize($result_c)), 200);
 		}
 		else
@@ -229,8 +240,8 @@ class API extends REST
 		}
 	}
 }
-
-// Initiiate Library
+// Initiate Library
 $api = new API;
 $api->processApi();
+
 ?>
